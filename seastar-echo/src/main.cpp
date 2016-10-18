@@ -49,22 +49,22 @@ future<> f(uint16_t port) {
 namespace bpo = boost::program_options;
 
 int main(int argc, char** argv) {
-	
-	try {
-		app_template app;
-		app.add_options()
-			("port,p",bpo::value<uint16_t>()->default_value(10007),"echo server port")
-			("server",bpo::value<std::string>()->default_value("localhost"),"echo server address")
-			;
+    
+    try {
+        app_template app;
+        app.add_options()
+            ("port,p",bpo::value<uint16_t>()->default_value(10007),"echo server port")
+            ("server",bpo::value<std::string>()->default_value("localhost"),"echo server address")
+            ;
 
         app.run_deprecated(argc, argv, [&](){
-				auto& config = app.configuration();
-				auto& port = config["port"].as<uint16_t>();			
-				return f(port);
-			});
-		
+                auto& config = app.configuration();
+                auto& port = config["port"].as<uint16_t>();			
+                return f(port);
+            });
+        
     
-	} catch(...) {
+    } catch(...) {
         std::cerr << "Couldn't start application: "
                   << std::current_exception() << "\n";
         return 1;
