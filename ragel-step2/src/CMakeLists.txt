@@ -21,4 +21,4 @@ RAGEL_TARGET(ragel-step2
 add_executable(ragel-step2 main.cpp)
 
 
-target_link_libraries(ragel-step2 asan ${SEASTAR_LIBRARIES})
+target_link_libraries(ragel-step2 ${SEASTAR_LIBRARIES})
