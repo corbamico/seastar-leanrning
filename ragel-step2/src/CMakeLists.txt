@@ -1,4 +1,4 @@
-set(SEASTAR_HOME "/home/lilas/Project/github/seastar/build/debug")
+set(SEASTAR_HOME "/home/lilas/Project/github/seastar-g++-6/build/debug")
 set(ENV{PKG_CONFIG_PATH} ${SEASTAR_HOME})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 
@@ -21,4 +21,4 @@ RAGEL_TARGET(ragel-step2
 add_executable(ragel-step2 main.cpp)
 
 
-target_link_libraries(ragel-step2 ${SEASTAR_LIBRARIES})
+target_link_libraries(ragel-step2 ${SEASTAR_LIBRARIES} seastar pthread )

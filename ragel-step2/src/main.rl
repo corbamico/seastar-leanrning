@@ -20,6 +20,10 @@
  */
 
 #include "core/ragel.hh"
+#include "core/iostream.hh"
+#include "core/temporary_buffer.hh"
+#include "core/app-template.hh"
+
 #include <memory>
 #include <iostream>
 #include <unordered_map>
@@ -36,7 +40,8 @@ action mark {
 }
 
 action store_version {
-    std::cout<<str()<<std::endl;
+    std::cerr<<str()<<std::endl;
+    //<<std::flush(cout)
 }
 
 
@@ -103,9 +108,53 @@ public:
 };
 
 
+class string_data_source_impl: public data_source_impl 
+{
+private:
+    temporary_buffer<char> _string_buf;
+public:
+    explicit string_data_source_impl(sstring ss):_string_buf(ss.c_str(),ss.size()){}
+    //explicit string_data_source_impl(sstring ss){
+    //    _string_buf = std::move(ss).release();
+    //}
+
+    virtual future<temporary_buffer<char>> get()
+    {
+        return make_ready_future<temporary_buffer<char> >(std::move(_string_buf));
+    }
+};
+
+class string_data_srouce:public data_source
+{
+public:
+    string_data_srouce(sstring ss)
+        :data_source(std::make_unique<string_data_source_impl>(ss)){}
+};
+
+input_stream<char> make_string_input_stream(sstring ss) {
+    return input_stream<char>(string_data_srouce(ss));
+}
+
+
+
 int main( int argc, char **argv )
 {
-    http_response_parser _parser;
+    app_template app;
+    //http_response_parser _parser;
+    //sstring ss("HTTP/1.1");
+    //auto input_string=make_string_input_stream(ss);
+    
+            http_response_parser _parser;
+            sstring ss("HTTP/1.1");
+            auto input_string=make_string_input_stream(ss);
+            
+            std::cout<< ss.c_str() <<std::endl;
+            
+            input_string.consume(_parser);
+    
+    app.run_deprecated(argc,argv,[&]{
+
+        });
     return 0;
 }
 
